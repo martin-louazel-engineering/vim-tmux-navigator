@@ -229,6 +229,7 @@ function! s:TmuxAwareResize(direction)
 	let l:layout_before = s:VimLayout()
     call s:VimResize(a:direction)
 	let l:layout_after = s:VimLayout()
+	" Should we 'push' a neighbouring tmux panes to grow the current vim split ?
 	if l:layout_before == l:layout_after
       let tmux_sep_direction=tr(a:direction, 'hjkl', 'ljjl')
       if !s:TmuxHasNeighbour(tmux_sep_direction)
