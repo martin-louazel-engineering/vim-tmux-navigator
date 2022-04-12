@@ -201,6 +201,11 @@ function! s:ShouldForwardResizeBackToTmux(direction)
   " least one tmux pane in the direction of the separator that can be shrunk
   if !s:VimHasNeighbour(xy_axis) && s:TmuxHasNeighbour(xy_axis)
     return 1
+  elseif !s:VimHasNeighbour(xy_axis) && !s:TmuxHasNeighbour(xy_axis)
+	let xy_axis_reverse=tr(xy_axis, 'jl', 'kh')
+	" case: If there is one vim split before along the axis, move it
+	" Otherwise, forward to tmux
+    return !s:VimHasNeighbour(xy_axis_reverse)
   endif
   return 0
 endfunction
