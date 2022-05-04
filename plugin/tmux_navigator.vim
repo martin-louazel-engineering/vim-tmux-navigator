@@ -25,7 +25,7 @@ function! s:VimResize(direction)
     let plus_minus = plus_minus == '+' ? '-' : '+'
   end
   let vertical = tr(a:direction, 'hjkl', '1001')
-  let vimCmd = (vertical ? 'vertical ' : '') . 'resize' . plus_minus . "5"
+  let vimCmd = (vertical ? 'vertical ' : '') . 'resize' . plus_minus . g:tmux_navigator_resize_step
   exec vimCmd
 endfunction
 
