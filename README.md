@@ -1,10 +1,8 @@
 Vim Tmux Navigator
 ==================
 
-This plugin is a repackaging of [Mislav Marohnić's](https://mislav.net/) tmux-navigator
-configuration described in [this gist][]. When combined with a set of tmux
-key bindings, the plugin will allow you to navigate seamlessly between
-vim and tmux splits using a consistent set of hotkeys.
+This plugin is an attempt at extending Chris Toomey's awesome [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) by adding the ability to also resize seamlessly between vim splits and tmux panes, as if they were one and the same.
+When combined with a set of tmux key bindings, the plugin will allow you to navigate and resize seamlessly between vim and tmux splits using a consistent set of hotkeys.
 
 **NOTE**: This requires tmux v1.8 or higher.
 
@@ -19,6 +17,13 @@ Vim panes and tmux splits seamlessly.
 - `<ctrl-k>` => Up
 - `<ctrl-l>` => Right
 - `<ctrl-\>` => Previous split
+
+You can also resize vim panes and tmux splits as if they were similar entities using the following mappings.
+
+- `<alt-h>` => Resize Left
+- `<alt-j>` => Reszie Down
+- `<alt-k>` => Resize Up
+- `<alt-l>` => Resize Right
 
 **Note** - you don't need to use your tmux `prefix` key sequence before using
 the mappings.
@@ -38,7 +43,7 @@ install the plugin:
 Add the following line to your `~/.vimrc` file
 
 ``` vim
-Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'martin-louazel-engineering/vim-tmux-navigator'
 ```
 
 Then run
@@ -50,7 +55,7 @@ Then run
 If you are using Vim 8+, you don't need any plugin manager. Simply clone this repository inside `~/.vim/pack/plugin/start/` directory and restart Vim.
 
 ```
-git clone git@github.com:christoomey/vim-tmux-navigator.git ~/.vim/pack/plugins/start/vim-tmux-navigator
+git clone git@github.com:martin-louazel-engineering/vim-tmux-navigator.git ~/.vim/pack/plugins/start/vim-tmux-navigator
 ```
 
 
@@ -63,14 +68,18 @@ To configure the tmux side of this customization there are two options:
 Add the following to your `~/.tmux.conf` file:
 
 ``` tmux
-# Smart pane switching with awareness of Vim splits.
-# See: https://github.com/christoomey/vim-tmux-navigator
+# Smart pane switching and resizing with awareness of Vim splits.
+# See: https://github.com/martin-louazel-engineering/vim-tmux-navigator
 is_vim="ps -o state= -o comm= -t '#{pane_tty}' \
     | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
 bind-key -n 'C-h' if-shell "$is_vim" 'send-keys C-h'  'select-pane -L'
 bind-key -n 'C-j' if-shell "$is_vim" 'send-keys C-j'  'select-pane -D'
 bind-key -n 'C-k' if-shell "$is_vim" 'send-keys C-k'  'select-pane -U'
 bind-key -n 'C-l' if-shell "$is_vim" 'send-keys C-l'  'select-pane -R'
+bind-key -n 'M-h' if-shell "$is_vim" 'send-keys M-h' 'resize-pane -L'
+bind-key -n 'M-j' if-shell "$is_vim" 'send-keys M-h' 'resize-pane -D'
+bind-key -n 'M-k' if-shell "$is_vim" 'send-keys M-h' 'resize-pane -U'
+bind-key -n 'M-l' if-shell "$is_vim" 'send-keys M-h' 'resize-pane -R'
 tmux_version='$(tmux -V | sed -En "s/^tmux ([0-9]+(.[0-9]+)?).*/\1/p")'
 if-shell -b '[ "$(echo "$tmux_version < 3.0" | bc)" = 1 ]' \
     "bind-key -n 'C-\\' if-shell \"$is_vim\" 'send-keys C-\\'  'select-pane -l'"
@@ -91,7 +100,7 @@ copying the snippet.
 When using TPM, add the following lines to your ~/.tmux.conf:
 
 ``` tmux
-set -g @plugin 'christoomey/vim-tmux-navigator'
+set -g @plugin 'martin-louazel-engineering/vim-tmux-navigator'
 run '~/.tmux/plugins/tpm/tpm'
 ```
 
@@ -103,7 +112,7 @@ Configuration
 
 ### Custom Key Bindings
 
-If you don't want the plugin to create any mappings, you can use the five
+If you don't want the plugin to create any mappings, you can use the
 provided functions to define your own custom maps. You will need to define
 custom mappings in your `~/.vimrc` as well as update the bindings in tmux to
 match.
@@ -120,6 +129,11 @@ nnoremap <silent> {Down-Mapping} :TmuxNavigateDown<cr>
 nnoremap <silent> {Up-Mapping} :TmuxNavigateUp<cr>
 nnoremap <silent> {Right-Mapping} :TmuxNavigateRight<cr>
 nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
+
+nnoremap <silent> {Resize-Left-Mapping} :TmuxResizeLeft<cr>
+nnoremap <silent> {Resize-Down-Mapping} :TmuxResizeDown<cr>
+nnoremap <silent> {Resize-Up-Mapping} :TmuxResizeUp<cr>
+nnoremap <silent> {Resize-Right-Mapping} :TmuxResizeRight<cr>
 ```
 
 *Note* Each instance of `{Left-Mapping}` or `{Down-Mapping}` must be replaced
@@ -178,9 +192,19 @@ let g:tmux_navigator_preserve_zoom = 1
 Naturally, if `g:tmux_navigator_disable_when_zoomed` is enabled, this option
 will have no effect.
 
+##### Resize step
+
+By default, the resizing of vim and tmux happens one line/column at a time.
+If you want to resize by a bigger amount, set the `g:tmux_navigator_resize_step` option to the desired value:
+
+```vim
+" Resize vim and tmux splits by bigger amount
+let g:tmux_navigator_resize_step = 3
+```
+
 #### Tmux
 
-Alter each of the five lines of the tmux configuration listed above to use your
+Alter each of the lines of the tmux configuration listed above to use your
 custom mappings. **Note** each line contains two references to the desired
 mapping.
 
@@ -302,4 +326,3 @@ script][] which has a more robust check.
 [TPM]: https://github.com/tmux-plugins/tpm
 [configuration section below]: #custom-key-bindings
 [this blog post]: http://www.codeography.com/2013/06/19/navigating-vim-and-tmux-splits
-[this gist]: https://gist.github.com/mislav/5189704
