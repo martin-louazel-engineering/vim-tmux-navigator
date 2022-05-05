@@ -19,6 +19,7 @@ Vim panes and tmux splits seamlessly.
 - `<ctrl-\>` => Previous split
 
 You can also resize vim panes and tmux splits as if they were similar entities using the following mappings.
+**NOTE**: In practice, this will make vim splits imitate the way tmux panes resize, and apply the resizing as if they were no distinctions between vim splits and tmux panes (this includes pushing neighbouring splits/panes to expand).
 
 - `<alt-h>` => Resize Left
 - `<alt-j>` => Reszie Down
