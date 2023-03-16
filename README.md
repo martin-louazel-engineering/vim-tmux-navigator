@@ -94,6 +94,8 @@ bind-key -T copy-mode-vi 'C-l' select-pane -R
 bind-key -T copy-mode-vi 'C-\' select-pane -l
 ```
 
+Note: This option doesn't allow to use a variable for the resize step. See the TPM section for that.
+
 #### TPM
 
 If you'd prefer, you can use the Tmux Plugin Manager ([TPM][]) instead of
@@ -201,6 +203,13 @@ If you want to resize by a bigger amount, set the `g:tmux_navigator_resize_step`
 ```vim
 " Resize vim and tmux splits by bigger amount
 let g:tmux_navigator_resize_step = 3
+```
+
+Also, the resize step from tmux can be tuned independantly when using the TPM.
+Add the following configuration option in your `~/.tmux.conf` file (after the line that includes the plugin)
+
+```tmux
+set -g @vim_tmux_navigator_resize_step 3
 ```
 
 #### Tmux
