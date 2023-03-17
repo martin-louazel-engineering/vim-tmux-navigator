@@ -17,7 +17,7 @@ tmux bind-key -n C-j if-shell "$is_vim" "send-keys C-j" "select-pane -D"
 tmux bind-key -n C-k if-shell "$is_vim" "send-keys C-k" "select-pane -U"
 tmux bind-key -n C-l if-shell "$is_vim" "send-keys C-l" "select-pane -R"
 
-local -r resize_step=$(tmux_option "$resize_step_config" "1")
+resize_step=$(tmux_option "$resize_step_config" "1")
 tmux bind-key -n M-h if-shell "$is_vim" 'send-keys M-h' "resize-pane -L $resize_step"
 tmux bind-key -n M-j if-shell "$is_vim" 'send-keys M-j' "resize-pane -D $resize_step"
 tmux bind-key -n M-k if-shell "$is_vim" 'send-keys M-k' "resize-pane -U $resize_step"
